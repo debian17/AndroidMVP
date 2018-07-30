@@ -11,12 +11,13 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     public abstract P providePresenter();
 
+    public abstract void restoreView();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FragmentManager fm = getSupportFragmentManager();
-
         RetainedFragment<P> rf = (RetainedFragment) fm.findFragmentByTag(RetainedFragment.TAG);
 
         if (rf == null) {
@@ -28,6 +29,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
             rf.setPresenter(presenter);
         } else {
             presenter = rf.getPresenter();
+            restoreView();
         }
         presenter.onAttachView(this);
     }

@@ -8,9 +8,10 @@ import io.reactivex.disposables.Disposable;
 public class BasePresenter<V extends BaseView> {
 
     private CompositeDisposable subscriptions;
-    protected V view;
 
     private boolean firstAttach;
+
+    protected V view;
 
     public BasePresenter() {
         subscriptions = new CompositeDisposable();
