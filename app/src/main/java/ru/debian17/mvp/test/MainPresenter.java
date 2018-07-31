@@ -4,9 +4,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import ru.debian17.mvp.BasePresenter;
+import ru.debian17.mvp.MvpPresenter;
 
-public class MainPresenter extends BasePresenter<MainView> {
+public class MainPresenter extends MvpPresenter<MainView> {
 
     private int a = 0;
 

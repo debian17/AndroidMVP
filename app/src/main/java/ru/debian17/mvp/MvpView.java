@@ -1,4 +1,4 @@
 package ru.debian17.mvp;
 
-public interface BaseView {
+public interface MvpView {
 }

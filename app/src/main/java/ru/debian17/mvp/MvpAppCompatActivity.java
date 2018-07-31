@@ -4,15 +4,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-@SuppressWarnings("unchecked")
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView {
+public abstract class MvpAppCompatActivity<P extends MvpPresenter> extends AppCompatActivity implements MvpView {
 
     protected P presenter;
 
-    public abstract P providePresenter();
+    protected abstract P providePresenter();
 
-    public abstract void restoreView();
+    protected abstract void restoreData(Bundle savedInstanceState);
 
+    protected void saveData(Bundle outState) {
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,17 +24,40 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         RetainedFragment<P> rf = (RetainedFragment) fm.findFragmentByTag(RetainedFragment.TAG);
 
         if (rf == null) {
-            presenter = providePresenter();
             rf = new RetainedFragment<>();
             fm.beginTransaction()
                     .add(rf, RetainedFragment.TAG)
                     .commit();
+            presenter = providePresenter();
             rf.setPresenter(presenter);
         } else {
             presenter = rf.getPresenter();
-            restoreView();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void onStart() {
+        super.onStart();
         presenter.onAttachView(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.onDetachView();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        restoreData(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveData(outState);
     }
 
     @Override
