@@ -1,12 +1,17 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
     defaultConfig {
+        applicationId "re.debian17.mvp"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "0.0.1"
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
     }
     buildTypes {
         release {
@@ -19,4 +24,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api 'com.android.support:appcompat-v7:27.1.1'
+
+    implementation('com.gitlab.elmed:ElmedAndroidTools:v0.0.4') {
+        exclude group: 'com.android.support'
+    }
+
 }

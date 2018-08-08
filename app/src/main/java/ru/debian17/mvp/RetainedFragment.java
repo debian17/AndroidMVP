@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-public class RetainedFragment<P extends MvpPresenter> extends Fragment {
+public final class RetainedFragment<P extends MvpPresenter> extends Fragment {
 
     public final static String TAG = "RetainedFragment";
 

@@ -8,7 +8,7 @@ public class MvpPresenter<V extends MvpView> {
 
     private boolean firstViewAttach;
 
-    public MvpPresenter() {
+    protected MvpPresenter() {
         firstViewAttach = true;
     }
 
@@ -19,10 +19,12 @@ public class MvpPresenter<V extends MvpView> {
 
     @CallSuper
     public void onAttachView(V view) {
-        this.view = view;
-        if (firstViewAttach) {
-            onFirstViewAttach(this.view);
-            firstViewAttach = false;
+        if (this.view == null && view != null) {
+            this.view = view;
+            if (firstViewAttach) {
+                firstViewAttach = false;
+                onFirstViewAttach(this.view);
+            }
         }
     }
 
@@ -31,7 +33,7 @@ public class MvpPresenter<V extends MvpView> {
         view = null;
     }
 
-    public void onFirstViewAttach(V view) {
+    protected void onFirstViewAttach(V view) {
         //override me!
     }
 

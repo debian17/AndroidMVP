@@ -1,5 +1,7 @@
 package ru.debian17.mvp;
 
+import android.support.annotation.CallSuper;
+import android.support.annotation.LayoutRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,15 +12,20 @@ public abstract class MvpAppCompatActivity<P extends MvpPresenter> extends AppCo
 
     protected abstract P providePresenter();
 
-    protected abstract void restoreData(Bundle savedInstanceState);
+    protected void restoreData(Bundle savedInstanceState) {
+    }
 
     protected void saveData(Bundle outState) {
     }
+
+    @LayoutRes
+    protected abstract int getMainView();
 
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getMainView());
 
         FragmentManager fm = getSupportFragmentManager();
         RetainedFragment<P> rf = (RetainedFragment) fm.findFragmentByTag(RetainedFragment.TAG);
@@ -33,25 +40,8 @@ public abstract class MvpAppCompatActivity<P extends MvpPresenter> extends AppCo
         } else {
             presenter = rf.getPresenter();
         }
-    }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void onStart() {
-        super.onStart();
         presenter.onAttachView(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        presenter.onDetachView();
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        restoreData(savedInstanceState);
     }
 
     @Override
@@ -61,10 +51,21 @@ public abstract class MvpAppCompatActivity<P extends MvpPresenter> extends AppCo
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        restoreData(savedInstanceState);
+    }
+
+    @CallSuper
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (isFinishing()) {
+            presenter.onDetachView();
             presenter.onDestroy();
+        } else {
+            presenter.onDetachView();
         }
     }
+
 }
